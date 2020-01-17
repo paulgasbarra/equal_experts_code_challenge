@@ -63,7 +63,10 @@ class Calculator extends React.Component {
   }
 
   appendNumber(number){
-    console.log('currentOperand', this.state.currentOperand)
+    if (this.state.previousOperand === "" && typeof this.state.currentOperandDisplay !== 'string'){
+      this.setState({currentOperand: number}, () => this.updateDisplay())
+      return
+    }
     if (number === '.' && this.state.currentOperand.includes('.')) return
     const appendedNumber = this.state.currentOperand.toString() + number.toString();
     this.setState({currentOperand: appendedNumber}, () => this.updateDisplay())
@@ -77,14 +80,15 @@ class Calculator extends React.Component {
     }, () => this.updateDisplay())
   }
 
-  chooseOperation(operation){
+  async chooseOperation(operation){
+    let computedOperand = this.state.currentOperand;
     if (this.state.currentOperand === "") return
     if (this.state.previousOperand !== "") {
-      this.compute();
+      computedOperand = await this.compute();
     }
     this.setState({
       operation: operation,
-      previousOperand: this.state.currentOperand,
+      previousOperand: computedOperand,
       currentOperand: "",
     }, () => this.updateDisplay());
   }
@@ -95,7 +99,6 @@ class Calculator extends React.Component {
   }
 
   compute() {
-    console.log('computing')
     let computation
     const previous = parseFloat(this.state.previousOperand)
     const current = parseFloat(this.state.currentOperand)
@@ -118,8 +121,9 @@ class Calculator extends React.Component {
     }
     this.setState(
       {currentOperand: computation, operation: undefined, previousOperand: ""},
-      () => this.updateDisplay())
+      () => this.updateDisplay()
     )
+    return computation
   }
 
   updateDisplay(){
