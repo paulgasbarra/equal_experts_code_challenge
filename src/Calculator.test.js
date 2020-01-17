@@ -105,17 +105,6 @@ describe("Calculator component", () => {
       wrapper.instance().chooseOperation("+");
       expect(wrapper.state().currentOperand).toBe("");
     })
-
-    test('will set previousOperandDisplay to computed value if previous operation', () => {
-      const wrapper = mount(<Calculator/>);
-      wrapper.setState({
-        currentOperand: "1",
-        previousOperand: "1",
-        operation: "+"
-      })
-      wrapper.instance().chooseOperation("+");
-      expect(wrapper.state().previousOperandDisplay).toBe("2 +");
-    })
   })
 
   describe("delete()", () => {
